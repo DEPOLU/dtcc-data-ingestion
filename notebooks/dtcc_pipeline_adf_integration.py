@@ -30,21 +30,10 @@ else:
     PROCESSING_MODE = "batch"   # Manual run - process all files
     TARGET_FILE = None
     PROCESSING_DATE = datetime.now().strftime("%Y-%m-%d")
-    print(f" BATCH MODE: Processing all files in source container")
+    print(f"BATCH MODE: Processing all files in source container")
 
-print(f"🚀 Mode: {PROCESSING_MODE}")
+print(f" Mode: {PROCESSING_MODE}")
 
-# COMMAND ----------
-
-import pandas as pd
-from datetime import datetime, date
-import re
-import os
-from pyspark.sql import SparkSession
-from pyspark.sql.types import *
-from pyspark.sql.functions import *
-
-print("  Libraries imported")
 
 # COMMAND ----------
 
@@ -65,7 +54,7 @@ STORAGE_ACCOUNT_NAME = "dtcc"
 spark.conf.set(f"fs.azure.account.key.{STORAGE_ACCOUNT_NAME}.blob.core.windows.net", STORAGE_ACCOUNT_KEY)
 spark.conf.set(f"fs.azure.account.key.{STORAGE_ACCOUNT_NAME}.dfs.core.windows.net", STORAGE_ACCOUNT_KEY)
 
-print(f"  Storage configured for: {STORAGE_ACCOUNT_NAME}")
+print(f"Storage configured for: {STORAGE_ACCOUNT_NAME}")
 
 # COMMAND ----------
 
@@ -80,12 +69,12 @@ try:
     abfss_path = f"abfss://source@{STORAGE_ACCOUNT_NAME}.dfs.core.windows.net/"
     files = dbutils.fs.ls(abfss_path)
     
-    print(f"  ABFSS connection successful")
+    print(f"ABFSS connection successful")
     PROTOCOL = "abfss"
     ENDPOINT = "dfs.core.windows.net"
     
 except Exception as e1:
-    print(f"⚠️  ABFSS failed, trying WASBS...")
+    print(f"    ABFSS failed, trying WASBS...")
     
     # Try WASBS as fallback
     try:
@@ -97,7 +86,7 @@ except Exception as e1:
         ENDPOINT = "blob.core.windows.net"
         
     except Exception as e2:
-        print(f"  Connection failed with both protocols")
+        print(f"Connection failed with both protocols")
         raise
 
 print(f"🔗 Using: {PROTOCOL} protocol")
@@ -407,7 +396,7 @@ def parse_mro_file_enhanced(file_path, file_name):
     file_drop_date = extract_file_drop_date(file_name)
     now_time = datetime.now()
     
-    print(f"\n🚀 Parsing: {file_name}")
+    print(f"\n Parsing: {file_name}")
     print(f"File drop date: {file_drop_date}")
     
     try:
@@ -473,7 +462,7 @@ def parse_mro_file_enhanced(file_path, file_name):
                         break
                         
                 except Exception as e:
-                    print(f"⚠️  Error processing line {file_row_number}: {e}")
+                    print(f"Error processing line {file_row_number}: {e}")
                     continue
             
             if not matched:
@@ -494,19 +483,19 @@ def parse_mro_file_enhanced(file_path, file_name):
                 spark_dataframes[record_type] = spark_df
                 
                 display_name = RECORD_CONFIGS[record_type]['display_name']
-                print(f"  {display_name}: {len(records):,} records")
+                print(f"{display_name}: {len(records):,} records")
         
         # Handle unknown layouts
         unknown_df = None
         if unknown_layouts:
             unknown_pandas_df = pd.DataFrame(unknown_layouts)
             unknown_df = spark.createDataFrame(unknown_pandas_df)
-            print(f"⚠️  Unknown layouts: {len(unknown_layouts):,} records")
+            print(f"    Unknown layouts: {len(unknown_layouts):,} records")
         
         return spark_dataframes, unknown_df
         
     except Exception as e:
-        print(f"  Error parsing file: {e}")
+        print(f"Error parsing file: {e}")
         raise
 
 # COMMAND ----------
@@ -515,7 +504,7 @@ def parse_mro_file_enhanced(file_path, file_name):
 def save_to_csv_enhanced(dataframes, unknown_df=None, output_subfolder=None):
     """Save DataFrames to CSV using exact config names with optional subfolder"""
     
-    print(f"💾 Saving CSVs to parsed container...")
+    print(f" Saving CSVs to parsed container...")
     
     saved_files = []
     
@@ -536,7 +525,7 @@ def save_to_csv_enhanced(dataframes, unknown_df=None, output_subfolder=None):
     # Save each DataFrame with exact config name
     for config_name, df in dataframes.items():
         try:
-            print(f"   💾 Saving {config_name}.csv...")
+            print(f"Saving {config_name}.csv...")
             
             # Convert to Pandas for easier CSV handling
             pandas_df = df.toPandas()
@@ -550,7 +539,7 @@ def save_to_csv_enhanced(dataframes, unknown_df=None, output_subfolder=None):
             
             record_count = len(pandas_df)
             display_name = RECORD_CONFIGS[config_name]['display_name']
-            print(f"     {display_name}: {record_count:,} records → {config_name}.csv")
+            print(f"{display_name}: {record_count:,} records → {config_name}.csv")
             
             saved_files.append({
                 'config_name': config_name,
@@ -560,12 +549,12 @@ def save_to_csv_enhanced(dataframes, unknown_df=None, output_subfolder=None):
             })
             
         except Exception as e:
-            print(f"     Error saving {config_name}: {e}")
+            print(f"Error saving {config_name}: {e}")
     
     # Save unknown layouts
     if unknown_df and unknown_df.count() > 0:
         try:
-            print(f"   💾 Saving unknown_layouts.csv...")
+            print(f"    Saving unknown_layouts.csv...")
             
             unknown_pandas_df = unknown_df.toPandas()
             csv_content = unknown_pandas_df.to_csv(index=False)
@@ -573,7 +562,7 @@ def save_to_csv_enhanced(dataframes, unknown_df=None, output_subfolder=None):
             dbutils.fs.put(csv_file_path, csv_content, overwrite=True)
             
             unknown_count = len(unknown_pandas_df)
-            print(f"   ⚠️  Unknown Layouts: {unknown_count:,} records → unknown_layouts.csv")
+            print(f"Unknown Layouts: {unknown_count:,} records → unknown_layouts.csv")
             
             saved_files.append({
                 'config_name': 'unknown_layouts',
@@ -583,7 +572,7 @@ def save_to_csv_enhanced(dataframes, unknown_df=None, output_subfolder=None):
             })
             
         except Exception as e:
-            print(f"     Error saving unknown layouts: {e}")
+            print(f"Error saving unknown layouts: {e}")
     
     return saved_files
 
@@ -615,7 +604,7 @@ def move_file_to_processed(file_path, file_name, date_folder=None):
         return destination_path
         
     except Exception as e:
-        print(f"⚠️  Could not move file to processed: {e}")
+        print(f"Could not move file to processed: {e}")
         return None
 
 def log_processing_summary(file_name, parsing_results, processing_time, saved_files, date_folder=None):
@@ -652,10 +641,10 @@ CSV Files Created:
         log_file_path = f"{log_folder_path}/{file_name}_processing_summary.txt"
         dbutils.fs.put(log_file_path, log_content, overwrite=True)
         
-        print(f"📝 Processing summary logged to logs/{folder_date}/")
+        print(f"Processing summary logged to logs/{folder_date}/")
         
     except Exception as e:
-        print(f"⚠️  Could not write processing log: {e}")
+        print(f"Could not write processing log: {e}")
 
 # COMMAND ----------
 
@@ -706,14 +695,14 @@ def process_single_mro_file(file_name, processing_date):
         total_time = (datetime.now() - start_time).total_seconds()
         
         # Success summary
-        print(f"\n🎉 PROCESSING COMPLETED SUCCESSFULLY!")
+        print(f"\n PROCESSING COMPLETED SUCCESSFULLY!")
         print("=" * 60)
         print(f" File: {file_name}")
-        print(f"⏱️  Processing time: {total_time:.2f} seconds")
-        print(f"  Total records: {total_records:,}")
-        print(f"  CSV files created: {len(saved_files)}")
-        print(f" Output location: parsed/{processing_date}/")
-        print(f"🗃️  Archived to: processed/{processing_date}/")
+        print(f"Processing time: {total_time:.2f} seconds")
+        print(f"Total records: {total_records:,}")
+        print(f"CSV files created: {len(saved_files)}")
+        print(f"Output location: parsed/{processing_date}/")
+        print(f"Archived to: processed/{processing_date}/")
         
         # Return success status for ADF
         return {
@@ -760,13 +749,13 @@ def process_mro_files_batch():
         mro_files = [f for f in files if f.name.lower().endswith('.mro')]
         
         if not mro_files:
-            print("⚠️  No MRO files found in source container")
+            print("No MRO files found in source container")
             return
         
         print(f" Found {len(mro_files)} MRO files:")
         for file_info in mro_files:
             size_mb = file_info.size / (1024 * 1024)
-            print(f"    {file_info.name}: {size_mb:.1f} MB")
+            print(f"{file_info.name}: {size_mb:.1f} MB")
         
         # Process each file
         successful_files = []
@@ -785,7 +774,7 @@ def process_mro_files_batch():
                 parsing_time = (datetime.now() - parsing_start).total_seconds()
                 
                 if not parsed_dataframes:
-                    print("⚠️  No data was parsed")
+                    print("    No data was parsed")
                     continue
                 
                 # Save to CSV without subfolder (batch mode)
@@ -806,9 +795,9 @@ def process_mro_files_batch():
                     'total_records': total_records
                 })
                 
-                print(f"\n🎉 Successfully processed {file_name}")
-                print(f"  Total records: {total_records:,}")
-                print(f"  CSV files created: {len(saved_files)}")
+                print(f"\n Successfully processed {file_name}")
+                print(f"Total records: {total_records:,}")
+                print(f"CSV files created: {len(saved_files)}")
                 
             except Exception as e:
                 error_message = f"Processing failed: {str(e)}"
@@ -826,9 +815,9 @@ def process_mro_files_batch():
         print("\n" + "="*60)
         print("  BATCH PROCESSING SUMMARY")
         print("="*60)
-        print(f"  Total Processing Time: {total_time:.2f} seconds")
-        print(f"  Successfully Processed: {len(successful_files)} files")
-        print(f"  Failed: {len(failed_files)} files")
+        print(f"Total Processing Time: {total_time:.2f} seconds")
+        print(f"Successfully Processed: {len(successful_files)} files")
+        print(f"Failed: {len(failed_files)} files")
         
         if successful_files:
             print(f"\n  SUCCESSFUL FILES:")
@@ -837,7 +826,7 @@ def process_mro_files_batch():
             
             for file_info in successful_files:
                 total_records_all += file_info['total_records']
-                print(f"    {file_info['name']}: {file_info['total_records']:,} records")
+                print(f"{file_info['name']}: {file_info['total_records']:,} records")
                 
                 # Collect unique CSV files created
                 for saved_file in file_info['saved_files']:
@@ -850,21 +839,21 @@ def process_mro_files_batch():
                         }
                     all_csv_files[config_name]['total_count'] += saved_file['count']
             
-            print(f"\n  TOTAL RECORDS PROCESSED: {total_records_all:,}")
+            print(f"\n TOTAL RECORDS PROCESSED: {total_records_all:,}")
             
-            print(f"\n  CSV FILES CREATED (in parsed container):")
+            print(f"\n CSV FILES CREATED (in parsed container):")
             for config_name, info in all_csv_files.items():
-                print(f"    {info['file_name']}: {info['total_count']:,} records ({info['display_name']})")
+                print(f"{info['file_name']}: {info['total_count']:,} records ({info['display_name']})")
         
         if failed_files:
             print(f"\n  FAILED FILES:")
             for file_info in failed_files:
-                print(f"    {file_info['name']}: {file_info['error']}")
+                print(f"{file_info['name']}: {file_info['error']}")
         
-        print(f"\n🏁 Batch processing pipeline completed!")
+        print(f"\n Batch processing pipeline completed!")
         
     except Exception as e:
-        print(f"  Error in batch processing: {e}")
+        print(f"Error in batch processing: {e}")
         raise
 
 # COMMAND ----------
@@ -912,7 +901,7 @@ try:
     else:
         # Check root of parsed container
         parsed_path = f"{PROTOCOL}://parsed@{STORAGE_ACCOUNT_NAME}.{ENDPOINT}/"
-        print(f" Checking: parsed/ (root)")
+        print(f"Checking: parsed/ (root)")
     
     files = dbutils.fs.ls(parsed_path)
     csv_files = [f for f in files if f.name.endswith('.csv')]
@@ -927,9 +916,9 @@ try:
             config_name = file.name.replace('.csv', '')
             if config_name in RECORD_CONFIGS:
                 display_name = RECORD_CONFIGS[config_name]['display_name']
-                print(f"    {file.name}: {size_mb:.2f} MB ({display_name})")
+                print(f"{file.name}: {size_mb:.2f} MB ({display_name})")
             else:
-                print(f"    {file.name}: {size_mb:.2f} MB")
+                print(f"{file.name}: {size_mb:.2f} MB")
         
         print(f"\n All CSV files use exact config names!")
         if PROCESSING_MODE == "single":
@@ -938,10 +927,10 @@ try:
             print(f" Location: Azure Portal > Storage Account > parsed/")
         
     else:
-        print("  No CSV files found")
+        print("No CSV files found")
         
 except Exception as e:
-    print(f"  Error verifying results: {e}")
+    print(f"Error verifying results: {e}")
 
 # COMMAND ----------
 
@@ -954,12 +943,11 @@ if PROCESSING_MODE == "single":
     print(f"Date: {PROCESSING_DATE}")
     print(f" Output: parsed/{PROCESSING_DATE}/")
 else:
-    print(f" Source: All .mro files in source container")
-    print(f" Output: parsed/ (root)")
+    print(f"Source: All .mro files in source container")
+    print(f"Output: parsed/ (root)")
 
-print(f"\n   CONFIG NAME → CSV FILE MAPPING:")
+print(f"\n CONFIG NAME → CSV FILE MAPPING:")
 print("=" * 50)
 
 for config_name, config in RECORD_CONFIGS.items():
-    print(f" {config_name}.csv → {config['display_name']}")
-
+    print(f"{config_name}.csv → {config['display_name']}")
