@@ -1,3 +1,4 @@
+
 # DTCC Ingestion Pipeline (Azure Databricks + ADF)
 
 This repository contains a production-ready pipeline for ingesting DTCC MRO files, parsing 15+ record types using defined layout mappings, and outputting structured CSVs. The pipeline supports both automated and manual execution, with integration into Azure Data Factory for scheduled or event-driven processing.
@@ -13,6 +14,22 @@ This repository contains a production-ready pipeline for ingesting DTCC MRO file
 - Handles enrichment and file archival
 - Outputs structured CSVs to Azure Blob Storage
 
+---
+
+## Repository Structure
+
+| Path                  | Description |
+|-----------------------|-------------|
+| `notebooks/`          | Databricks notebook with core pipeline logic |
+| `configs/`            | Layout configurations for fixed-width parsing |
+| `pipelines/`          | Azure Data Factory pipeline JSON exports |
+| `scripts/`            | Optional helper scripts (e.g., file mover) |
+| `sql/`                | SQL DDL scripts for target tables |
+| `tests/`              | Unit tests for record parsing |
+| `data-samples/`       | Sample MRO files (if permitted) |
+| `docs/`               | Diagrams and architecture references |
+
+---
 
 ## Technologies Used
 
@@ -34,7 +51,15 @@ This ADF pipeline orchestrates the parsing of new `.mro` files:
 2. **Filter_mro_files** – Filters only `.mro` files using a conditional expression.
 3. **ProcessEachMROFile** – Loops over each file in parallel and triggers a Databricks notebook job.
 
+### Parameters Passed to Notebook:
 
+| Parameter         | Description |
+|-------------------|-------------|
+| `input_file`      | File name (e.g., `DTCC_ABC.D250801.mro`) |
+| `processing_date` | `@utcnow()` in `yyyy-MM-dd` format |
+| `mode`            | Always set to `single` by ADF |
+
+---
 
 ## Output
 
@@ -73,6 +98,8 @@ Processed files are written to the `parsed` container as CSVs, with filenames ma
 ---
 
 ## 👤 Maintainer
+
+Vikas Dabas – [LinkedIn](https://www.linkedin.com/in/vikasdabas)
 
 Vikas Dabas – [LinkedIn](https://www.linkedin.com/in/vikasdabas)
 
