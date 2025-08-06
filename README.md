@@ -101,5 +101,4 @@ Processed files are written to the `parsed` container as CSVs, with filenames ma
 
 Vikas Dabas – [LinkedIn](https://www.linkedin.com/in/vikasdabas)
 
-Vikas Dabas – [LinkedIn](https://www.linkedin.com/in/vikasdabas)
 
