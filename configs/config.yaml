@@ -1,0 +1,226 @@
+contract_valuation:
+  layout:
+  - column: SUBMITTERCODE
+    start: 0
+    end: 1
+  - column: RECORDTYPE
+    start: 1
+    end: 3
+  - column: SEQUENCENUMBER
+    start: 3
+    end: 5
+  - column: CONTRACTNUMBER
+    start: 5
+    end: 35
+  - column: CONTRACTVALUEAMOUNT1
+    start: 35
+    end: 51
+  - column: CONTRACTVALUEQUALIFIER1
+    start: 51
+    end: 54
+  - column: CONTRACTVALUEAMOUNT2
+    start: 55
+    end: 71
+  - column: CONTRACTVALUEQUALIFIER2
+    start: 71
+    end: 74
+  - column: CONTRACTVALUEAMOUNT3
+    start: 75
+    end: 91
+  - column: CONTRACTVALUEQUALIFIER3
+    start: 91
+    end: 94
+  - column: CONTRACTVALUEAMOUNT4
+    start: 95
+    end: 111
+  - column: CONTRACTVALUEQUALIFIER4
+    start: 111
+    end: 114
+  - column: CONTRACTVALUEAMOUNT5
+    start: 115
+    end: 131
+  - column: CONTRACTVALUEQUALIFIER5
+    start: 131
+    end: 134
+  - column: CONTRACTPERCENTAGEAMOUNT1
+    start: 135
+    end: 145
+  - column: CONTRACTPERCENTAGEAMOUNTQUALIFIER1
+    start: 145
+    end: 148
+  - column: CONTRACTPERCENTAGEAMOUNT2
+    start: 149
+    end: 159
+  - column: CONTRACTPERCENTAGEAMOUNTQUALIFIER2
+    start: 159
+    end: 162
+  - column: CONTRACTPERCENTAGEAMOUNT3
+    start: 163
+    end: 173
+  - column: CONTRACTPERCENTAGEAMOUNTQUALIFIER3
+    start: 173
+    end: 176
+  - column: REJECTCODELIST
+    start: 288
+    end: 300
+  matcher: line[1:3] == '13' and line[3:5] == '02'
+  display_name: Contract Valuation
+submitting_header:
+  layout:
+  - column: SUBMITTERCODE
+    start: 0
+    end: 1
+  - column: RECORDTYPE
+    start: 1
+    end: 3
+  - column: SUBMITTINGPARTICIPANTNUMBER
+    start: 3
+    end: 7
+  - column: IPSBUSINESSCODE
+    start: 7
+    end: 10
+  - column: TRANSMISSIONUNIQUEID
+    start: 10
+    end: 40
+  - column: TOTALCOUNT
+    start: 40
+    end: 52
+  - column: VALUATIONDATE
+    start: 52
+    end: 60
+  - column: TESTINDICATOR
+    start: 60
+    end: 61
+  - column: ASSOCIATEDCARRIERCOMPANYID
+    start: 61
+    end: 71
+  - column: REJECTCODE
+    start: 288
+    end: 300
+  matcher: line[1:3] == '10'
+  display_name: Submitting Header
+contra_record:
+  layout:
+  - column: SUBMITTERCODE
+    start: 0
+    end: 1
+  - column: RECORDTYPE
+    start: 1
+    end: 3
+  - column: CONTRAPARTICIPANTNUMBER
+    start: 3
+    end: 7
+  - column: ASSOCIATEDFIRMID
+    start: 7
+    end: 11
+  - column: ASSOCIATEDFIRMSUBMITTEDCONTRACTCOUNT
+    start: 11
+    end: 21
+  - column: ASSOCIATEDFIRMDELIVEREDCONTRACTCOUNT
+    start: 21
+    end: 31
+  - column: IPSEVENTCODE
+    start: 31
+    end: 34
+  - column: IPSSTAGECODE
+    start: 34
+    end: 37
+  - column: REJECTCODE
+    start: 288
+    end: 300
+  matcher: line[1:3] == '12'
+  display_name: Contra Record
+contract_underlying_asset:
+  layout:
+  - column: SUBMITTERSCODE
+    start: 0
+    end: 1
+  - column: RECORDTYPE
+    start: 1
+    end: 3
+  - column: SEQUENCENUMBER
+    start: 3
+    end: 5
+  - column: CONTRACTNUMBER
+    start: 5
+    end: 35
+  - column: CUSIPFUNDID
+    start: 35
+    end: 54
+  - column: FUNDVALUE
+    start: 54
+    end: 70
+  - column: FUNDPERCENTAGE
+    start: 70
+    end: 80
+  - column: FUNDUNITS
+    start: 80
+    end: 98
+  - column: GUARANTEEDINTERESTRATE
+    start: 98
+    end: 108
+  - column: FUNDSECURITYNAME
+    start: 108
+    end: 148
+  - column: FUNDSECURITYTYPE
+    start: 148
+    end: 151
+  - column: MUTUALFUNDCUSIP
+    start: 151
+    end: 160
+  - column: RESTRICTIONINDICATOR
+    start: 160
+    end: 161
+  - column: RESTRICTIONREASON
+    start: 161
+    end: 162
+  - column: STANDINGALLOCINDICATOR
+    start: 162
+    end: 163
+  - column: STANDINGALLOCATIONPCT
+    start: 163
+    end: 173
+  - column: MATURITYELECTIONINSTRUCTIONS
+    start: 173
+    end: 175
+  - column: RATEFUNDRISKTHRESHOLDPCT
+    start: 175
+    end: 185
+  - column: TOTALNETFUNDFEEPCT
+    start: 185
+    end: 195
+  - column: MVAINDICATOR
+    start: 195
+    end: 196
+  - column: THIRDPARTYPLATFORMID
+    start: 196
+    end: 226
+  - column: THIRDPARTYPLATFORMSOURCE
+    start: 226
+    end: 228
+  - column: COREFUNDINDICATOR
+    start: 228
+    end: 229
+  - column: LOCKFEATUREINDICATOR
+    start: 229
+    end: 230
+  - column: CARRIERFUNDLEVELFEE
+    start: 230
+    end: 240
+  - column: INDEXSTRATEGYTERM
+    start: 240
+    end: 243
+  - column: INDEXSTRATEGYTERMQUALIFIER
+    start: 243
+    end: 244
+  - column: NUMBEROFINDEXPERIODS
+    start: 244
+    end: 247
+  - column: DURATIONOFINDEXPERIODS
+    start: 247
+    end: 250
+  - column: REJECTCODE
+    start: 288
+    end: 300
+  matcher: line[1:3] == '13' and line[3:5] == '03'
+  display_name: Contract Underlying Asset
