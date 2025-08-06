@@ -16,21 +16,6 @@ This repository contains a production-ready pipeline for ingesting DTCC MRO file
 
 ---
 
-## Repository Structure
-
-| Path                  | Description |
-|-----------------------|-------------|
-| `notebooks/`          | Databricks notebook with core pipeline logic |
-| `configs/`            | Layout configurations for fixed-width parsing |
-| `pipelines/`          | Azure Data Factory pipeline JSON exports |
-| `scripts/`            | Optional helper scripts (e.g., file mover) |
-| `sql/`                | SQL DDL scripts for target tables |
-| `tests/`              | Unit tests for record parsing |
-| `data-samples/`       | Sample MRO files (if permitted) |
-| `docs/`               | Diagrams and architecture references |
-
----
-
 ## Technologies Used
 
 - Azure Databricks (PySpark)
@@ -92,8 +77,6 @@ Processed files are written to the `parsed` container as CSVs, with filenames ma
 1. Upload the Databricks notebook (`dtcc_pipeline_adf_integration.py`) to your workspace.
 2. Configure blob containers: `source`, `parsed`, `processed`, and `logs`.
 3. Import the `dtccdailyprocessing.json` ADF pipeline via Azure Data Factory Studio.
-
----
 
 ---
 
