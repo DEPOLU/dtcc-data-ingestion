@@ -59,7 +59,7 @@ print(f"Storage configured for: {STORAGE_ACCOUNT_NAME}")
 # COMMAND ----------
 
 # Determine working protocol (UNCHANGED)
-print("🔍 Testing storage connection...")
+print("Testing storage connection...")
 
 PROTOCOL = None
 ENDPOINT = None
@@ -375,7 +375,7 @@ def parse_line_to_record(line, layout):
     return record
 
 def read_mro_file_content(file_path):
-    print(f"📖 Reading file: {os.path.basename(file_path)}")
+    print(f" Reading file: {os.path.basename(file_path)}")
     
     try:
         df = spark.read.text(file_path)
